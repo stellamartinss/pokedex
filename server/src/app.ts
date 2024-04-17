@@ -1,5 +1,6 @@
 import express from "express";
 import pokemon from "./routes/pokemon";
+import abilities from "./routes/abilities";
 import cors from "cors"
 
 
@@ -18,6 +19,7 @@ app.get('/_health', (_req, res) => {
 })
 
 app.use('/pokemon', pokemon);
+app.use('/ability', abilities);
 
 app.listen(PORT, () => {
   console.log(`App Listening on Port: ${PORT}`);
