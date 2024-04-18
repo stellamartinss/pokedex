@@ -1,14 +1,11 @@
-import React, { SetStateAction, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useMutation, useQuery } from 'react-query';
-import { caughtPokemons, fetchPokemons, getPokemonsBy } from '../../services/pokemon';
+import { caughtPokemons, getPokemonsBy } from '../../services/pokemon';
 import { Paginator } from 'primereact/paginator';
-import { Button } from 'primereact/button';
 import { useNavigate } from 'react-router-dom';
 import { ProgressSpinner } from 'primereact/progressspinner';
 import { getAbilities } from '../../services/ability';
-import { Dropdown } from 'primereact/dropdown';
 import Filters from '../../components/Filters/Filters';
-import { Pokemon } from '../../common/classes/Pokemon/Pokemon';
 import PokemonCard from '../../components/PokemonCard.tsx/PokemonCard';
 
 const CaughtPokemons = () => {
@@ -51,7 +48,7 @@ const CaughtPokemons = () => {
     mutationKey: ['caughtPokemons'],
   });
 
-  const { data: initialFilters, refetch: refetchGetAbilities } = useQuery({
+  const { data: initialFilters } = useQuery({
     queryFn: () => getAbilities(),
     queryKey: ['fetchExperiment'],
   });
@@ -77,20 +74,18 @@ const CaughtPokemons = () => {
         [field]: typeof value === 'string' ? value : value.name,
       };
 
-      // Call mutateFilterPokemons with the updated filters
       mutateFilterPokemons({
         page: 0,
         filters: `ability=${updatedFilters.ability}&type=${updatedFilters.type}`,
       });
 
-      setPokemonDataList(filterPokemonData)
+      setPokemonDataList(filterPokemonData);
 
       return updatedFilters;
     });
   };
 
   const chooseSetOfContent = () => {
-    
     if (selectedPokeFilters.ability !== '') {
       if (filterPokemonData) {
         return listTemplate(filterPokemonData);
