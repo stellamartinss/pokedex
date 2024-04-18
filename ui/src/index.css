@@ -34,3 +34,8 @@ code {
 .pointer {
   cursor: pointer;
 }
+
+.p-dialog-header, .p-dialog {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
