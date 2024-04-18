@@ -1,20 +1,12 @@
-import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { Card } from 'primereact/card';
 import { ProgressSpinner } from 'primereact/progressspinner';
-import { Tag } from 'primereact/tag';
-import { Rating } from 'primereact/rating';
-import { Button } from 'primereact/button';
 import { getPokemonDetails } from '../../services/pokemon';
-import { useQuery } from 'react-query';
-import { Panel } from 'primereact/panel';
+import { useQuery } from 'react-query';;
 
 const PokemonDetails = () => {
   const { id } = useParams();
-  const [pokemon, setPokemon] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
 
-  const { data, isLoading, isError, refetch } = useQuery({
+  const { data, isLoading } = useQuery({
     queryFn: () => getPokemonDetails(id ? id : '1'),
     queryKey: ['fetchExperiment'],
     enabled: !!id,
@@ -29,26 +21,40 @@ const PokemonDetails = () => {
   }
 
   return (
-    <Panel>
-      <div className='font-bold text-xl capitalize'>
-        <h1 style={{ fontSize: '30px' }}>{data.name}</h1>
+    <div
+      className='col-12 sm:col-12 lg:col-12 xl:col-12 p-2 capitalize my-3'
+      key={data.id}
+    >
+      <div className='grid grid-nogutter'>
+        <div className='col-12 sm:col-12 lg:col-4 xl:col-4 p-2 capitalize my-3'>
+          <img
+            className='w-9 shadow-2 border-round'
+            src={`${data.image}`}
+            alt={data.name}
+          />
+        </div>
+        <div className='col-12 sm:col-12 lg:col-6 xl:col-6 p-2 capitalize my-3 bg-red-500 text-white'>
+          <div className='grid grid-nogutter mt-3'>
+            <div className='col-6'>
+              <h5 className='text-sm'>Height</h5>
+              <p className='text-3xl'>{data.height}</p>
+            </div>
+            <div className='col-6'>
+              <h5 className='text-sm'>Weight</h5>
+              <p className='text-3xl'>{data.weight}</p>
+            </div>
+            <div className='col-6'>
+              <h5 className='text-sm'>Abilities</h5>
+              <p className='text-3xl'>{data.abilities.join(', ')}</p>
+            </div>
+            <div className='col-6'>
+              <h5 className='text-sm'>Type:</h5>
+              <p className='text-3xl'>{data.type}</p>
+            </div>
+          </div>
+        </div>
       </div>
-      <img src={data.image} alt={data.name} style={{ width: '100%' }} />
-      <div className='p-mt-2'>{data.description}</div>
-      <div className='p-mt-2'>
-        Type: <Tag value={data.type} severity='info' />
-      </div>
-      <div className='p-mt-2'>Height: {data.height}</div>
-      <div className='p-mt-2'>Weight: {data.weight}</div>
-      <div className='p-mt-2'>Abilities: {data.abilities.join(', ')}</div>
-      <div className='text-right'>
-        <Button
-          label='Back to Home'
-          className='p-mt-2'
-          onClick={() => window.history.back()}
-        />
-      </div>
-    </Panel>
+    </div>
   );
 };
 

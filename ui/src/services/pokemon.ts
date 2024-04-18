@@ -12,6 +12,16 @@ const fetchPokemons = async ({ page }: { page: number }) => {
   }
 };
 
+const caughtPokemons = async ({ page }: { page: number }) => {
+  try {
+    const response = await axios.get(`${BASE_URL}?caught=truelimit=20&offset=${page}`);
+    return response.data;
+  } catch (error: any) {
+    console.error('Error fetching Pokemon data:', error.message);
+    throw error;
+  }
+};
+
 const getPokemonDetails = async (id: string) => {
   try {
     const response = await axios.get(`${BASE_URL}/details/${id}`);
@@ -39,4 +49,4 @@ const getPokemonsBy = async ({
   }
 };
 
-export { fetchPokemons, getPokemonDetails, getPokemonsBy };
+export { fetchPokemons, getPokemonDetails, getPokemonsBy, caughtPokemons };

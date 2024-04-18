@@ -2,7 +2,6 @@ import { Request, Response } from 'express';
 import axios from 'axios';
 
 const BASE_API_URL = 'https://pokeapi.co/api/v2/pokemon';
-const BASE_API_ABILITY_URL = 'https://pokeapi.co/api/v2/ability';
 
 const getPokemonDitto = async (req: Request, res: Response): Promise<void> => {
   const { query } = req;
@@ -105,4 +104,25 @@ const getPokemonBy = async (req: Request, res: Response) => {
   }
 };
 
-export { getPokemonDitto, getPokemonDetails, getPokemonBy };
+const caughtPokemons = async (req: Request, res: Response) => {
+  try {
+    const { query } = req;
+
+    const response = await axios.get(`${BASE_API_URL}`, {
+      params: {
+        offset: query.offset || 0,
+        limit: 20,
+        caught: true,
+      },
+    });
+
+    const caughtPokemons = response.data.results;
+
+    res.json(caughtPokemons);
+  } catch (error) {
+    console.error('Error fetching caught pokemons:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
+
+export { getPokemonDitto, getPokemonDetails, getPokemonBy, caughtPokemons };
