@@ -1,15 +1,25 @@
 import { useParams } from 'react-router-dom';
 import { ProgressSpinner } from 'primereact/progressspinner';
-import { getPokemonDetails } from '../../services/pokemon';
-import { useQuery } from 'react-query';;
+import { catchPokemon, getPokemonDetails } from '../../services/pokemon';
+import { useMutation, useQuery } from 'react-query';
+import { Button } from 'primereact/button';
 
 const PokemonDetails = () => {
   const { id } = useParams();
 
   const { data, isLoading } = useQuery({
     queryFn: () => getPokemonDetails(id ? id : '1'),
-    queryKey: ['fetchExperiment'],
+    queryKey: ['fetchPokemon'],
     enabled: !!id,
+  });
+
+  const {
+    data: catchPokemonData,
+    isLoading: isLoadingPokemon,
+    mutate: mutateCatchPokemon,
+  } = useMutation({
+    mutationFn: (id: number) => catchPokemon(id),
+    mutationKey: ['catchPokemon'],
   });
 
   if (isLoading) {
@@ -45,11 +55,20 @@ const PokemonDetails = () => {
             </div>
             <div className='col-6'>
               <h5 className='text-sm'>Abilities</h5>
-              <p className='text-3xl'>{data.abilities.join(', ')}</p>
+              <p className='text-3xl'>{data?.abilities.join(', ')}</p>
             </div>
             <div className='col-6'>
               <h5 className='text-sm'>Type:</h5>
               <p className='text-3xl'>{data.type}</p>
+            </div>{' '}
+            <div className='col-12'>
+              <Button
+                className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 border border-blue-700 rounded'
+                icon='pi pi-heart'
+                onClick={() => mutateCatchPokemon(data.id)}
+              >
+                Catch
+              </Button>
             </div>
           </div>
         </div>

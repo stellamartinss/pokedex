@@ -2,6 +2,14 @@ import { Request, Response } from 'express';
 import axios from 'axios';
 
 const BASE_API_URL = 'https://pokeapi.co/api/v2/pokemon';
+const CAUGHT_POKEMONS_DATA_BASE: {
+  name: string;
+  image: string;
+  type: string;
+  height: number;
+  weight: number;
+  abilities: string;
+}[] = [];
 
 const getPokemonDitto = async (req: Request, res: Response): Promise<void> => {
   const { query } = req;
@@ -106,23 +114,44 @@ const getPokemonBy = async (req: Request, res: Response) => {
 
 const caughtPokemons = async (req: Request, res: Response) => {
   try {
-    const { query } = req;
-
-    const response = await axios.get(`${BASE_API_URL}`, {
-      params: {
-        offset: query.offset || 0,
-        limit: 20,
-        caught: true,
-      },
-    });
-
-    const caughtPokemons = response.data.results;
-
-    res.json(caughtPokemons);
+    res.json({ results: CAUGHT_POKEMONS_DATA_BASE });
   } catch (error) {
     console.error('Error fetching caught pokemons:', error);
     res.status(500).json({ error: 'Internal Server Error' });
   }
 };
 
-export { getPokemonDitto, getPokemonDetails, getPokemonBy, caughtPokemons };
+const catchPokemon = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  
+  try {
+    const response = await axios.get(`${BASE_API_URL}/${id}`);
+   
+    const pokemonDetails = {
+      name: response.data.name,
+      image: response.data.sprites.front_default,
+      type: response.data.types.map((type: any) => type.type.name).join(', '),
+      height: response.data.height,
+      weight: response.data.weight,
+      abilities: response.data.abilities.map(
+        (ability: any) => ability.ability.name
+      ),
+    };
+    
+    CAUGHT_POKEMONS_DATA_BASE.push(pokemonDetails);
+    
+    res.status(201).json();
+    return;
+  } catch (error) {
+    console.error('Error fetching caught pokemons:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
+
+export {
+  getPokemonDitto,
+  getPokemonDetails,
+  getPokemonBy,
+  caughtPokemons,
+  catchPokemon,
+};
