@@ -145,7 +145,7 @@ const Home = () => {
   return (
     <>
       {!isLoading ? (
-        <div className='card'>
+        <div className=''>
           <div className='flex align-items-center justify-content-between'>
             <h1 style={{ fontSize: '40px' }}>Pokedéx</h1>
           </div>

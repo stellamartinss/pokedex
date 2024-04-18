@@ -32,18 +32,18 @@ const PokemonDetails = () => {
 
   return (
     <div
-      className='col-12 sm:col-12 lg:col-12 xl:col-12 p-2 capitalize my-3'
+      className='col-12 sm:col-12 lg:col-12 xl:col-12 p-2 capitalize my-3 h-screen'
       key={data.id}
     >
       <div className='grid grid-nogutter'>
         <div className='col-12 sm:col-12 lg:col-4 xl:col-4 p-2 capitalize my-3'>
           <img
-            className='w-9 shadow-2 border-round'
+            className='w-9 shadow-2 border-round bg-white'
             src={`${data.image}`}
             alt={data.name}
           />
         </div>
-        <div className='col-12 sm:col-12 lg:col-6 xl:col-6 p-2 capitalize my-3 bg-red-500 text-white'>
+        <div className='col-12 sm:col-12 lg:col-6 xl:col-6 p-2 capitalize my-3 bg-red-500 text-white box-shadow pt-5'>
           <div className='grid grid-nogutter mt-3'>
             <div className='col-6'>
               <h5 className='text-sm'>Height</h5>
@@ -61,9 +61,9 @@ const PokemonDetails = () => {
               <h5 className='text-sm'>Type:</h5>
               <p className='text-3xl'>{data.type}</p>
             </div>{' '}
-            <div className='col-12'>
+            <div className='col-12 flex justify-content-center mt-5'>
               <Button
-                className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 border border-blue-700 rounded'
+                className='bg-red-700 hover:bg-red-500 text-white font-bold py-2 px-4 rounded-full "'
                 icon='pi pi-heart'
                 onClick={() => mutateCatchPokemon(data.id)}
               >
