@@ -1,13 +1,15 @@
 import { useEffect, useState } from 'react';
 import { useMutation, useQuery } from 'react-query';
-import { caughtPokemons, getPokemonsBy } from '../../services/pokemon';
+import {
+  caughtPokemons,
+  getCaughtPokemonsBy,
+} from '../../services/pokemon';
 import { Paginator } from 'primereact/paginator';
 import { useNavigate } from 'react-router-dom';
 import { ProgressSpinner } from 'primereact/progressspinner';
 import { getAbilities } from '../../services/ability';
 import Filters from '../../components/Filters/Filters';
 import PokemonCard from '../../components/PokemonCard.tsx/PokemonCard';
-import { Panel } from 'primereact/panel';
 import PokemonNotFound from '../../components/PokemonNotFound/PokemonNotFound';
 
 const initialFilterValue = {
@@ -62,12 +64,11 @@ const CaughtPokemons = () => {
 
   const {
     data: filterPokemonData,
-    isLoading: isLoadingFilterPokemonData,
     mutate: mutateFilterPokemons,
   } = useMutation({
     mutationFn: ({ page, filters }: { page: number; filters: string }) =>
-      getPokemonsBy({ page: page, filters: filters }),
-    mutationKey: ['filterPokemons'],
+      getCaughtPokemonsBy({ page: page, filters: filters }),
+    mutationKey: ['filterCatchPokemonsBy'],
   });
 
   const prepareFilter = async ({
@@ -83,10 +84,12 @@ const CaughtPokemons = () => {
         [field]: typeof value === 'string' ? value : value.name,
       };
 
-      mutateFilterPokemons({
-        page: 0,
-        filters: `ability=${updatedFilters.ability}&type=${updatedFilters.type}`,
-      });
+      if (updatedFilters.ability.length > 4 || updatedFilters.type) {
+        mutateFilterPokemons({
+          page: 0,
+          filters: `ability=${updatedFilters.ability}&type=${updatedFilters.type}`,
+        });
+      }
 
       setPokemonDataList(filterPokemonData);
 
@@ -101,16 +104,11 @@ const CaughtPokemons = () => {
     setSelectedPokeFilters(initialFilterValue);
   };
 
+
   const chooseSetOfContent = () => {
-    if (selectedPokeFilters.ability !== '') {
-      if (filterPokemonData && filterPokemonData.length >= 0) {
+    if (selectedPokeFilters.ability !== '' || selectedPokeFilters.type !== '') {
+      if (filterPokemonData && filterPokemonData.length > 0) {
         return listTemplate(filterPokemonData);
-      } else if (filterPokemonData && isLoadingFilterPokemonData) {
-        return (
-          <div className='h-screen bg-red-600 flex justify-center text-center'>
-            <div>Loading...</div>
-          </div>
-        );
       } else {
         return (
           <PokemonNotFound
@@ -119,10 +117,6 @@ const CaughtPokemons = () => {
           />
         );
       }
-    } else if (!data || data.results.length <= 0) {
-      return (
-        <PokemonNotFound message={"You haven't caught any Pokémon yet."} />
-      );
     } else {
       return listTemplate(pokemonDataList);
     }

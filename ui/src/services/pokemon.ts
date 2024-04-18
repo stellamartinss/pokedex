@@ -61,10 +61,27 @@ const getPokemonsBy = async ({
   }
 };
 
+const getCaughtPokemonsBy = async ({
+  page,
+  filters,
+}: {
+  page: number;
+  filters: string;
+}) => {
+  try {
+    const response = await axios.get(`${BASE_URL}/filter-caught-pokemons?${filters}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching Pokémon by type:', error);
+    return [];
+  }
+};
+
 export {
   fetchPokemons,
   getPokemonDetails,
   getPokemonsBy,
   caughtPokemons,
   catchPokemon,
+  getCaughtPokemonsBy,
 };

@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import axios from 'axios';
 import { setCaughtPokemon, setPokemonDetails } from '../services/pokemon';
 import { CAUGHT_POKEMONS_DATA_BASE } from '../services/common';
+import { Pokemon } from '../models/pokemon';
 
 const BASE_API_URL = 'https://pokeapi.co/api/v2/pokemon';
 
@@ -92,6 +93,21 @@ const caughtPokemons = async (req: Request, res: Response) => {
   }
 };
 
+const getCaughtPokemonsBy = async (req: Request, res: Response) => {
+  try {
+    const { ability, type } = req.query;
+
+  
+    const response = CAUGHT_POKEMONS_DATA_BASE.filter(
+      (item: any) => item.abilities.includes(ability) || item.type.includes(type));
+
+    res.json(response);
+  } catch (error) {
+    console.error('Error fetching caught pokemons:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
+
 const catchPokemon = async (req: Request, res: Response) => {
   const { id } = req.params;
 
@@ -116,4 +132,5 @@ export {
   getPokemonBy,
   caughtPokemons,
   catchPokemon,
+  getCaughtPokemonsBy,
 };
