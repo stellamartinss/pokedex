@@ -36,34 +36,34 @@ const PokemonDetails = () => {
       key={data.id}
     >
       <div className='grid grid-nogutter'>
-        <div className='col-12 sm:col-12 lg:col-4 xl:col-4 p-2 capitalize my-3'>
+        <div className='col-12 sm:col-12 lg:col-4 xl:col-4 p-2 capitalize my-3 '>
           <img
             className='w-9 shadow-2 border-round bg-white'
             src={`${data.image}`}
             alt={data.name}
           />
         </div>
-        <div className='col-12 sm:col-12 lg:col-6 xl:col-6 p-2 capitalize my-3 bg-red-500 text-white box-shadow pt-5'>
+        <div className='col-12  card-shadow sm:col-12 lg:col-6 xl:col-6 p-2 capitalize my-3 bg-red-500 text-white pt-5 px-5'>
           <div className='grid grid-nogutter mt-3'>
-            <div className='col-6'>
+            <div className='col-12 md:col-6'>
               <h5 className='text-sm'>Height</h5>
               <p className='text-3xl'>{data.height}</p>
             </div>
-            <div className='col-6'>
+            <div className='col-12 md:col-6'>
               <h5 className='text-sm'>Weight</h5>
               <p className='text-3xl'>{data.weight}</p>
             </div>
-            <div className='col-6'>
+            <div className='col-12 md:col-6'>
               <h5 className='text-sm'>Abilities</h5>
               <p className='text-3xl'>{data?.abilities.join(', ')}</p>
             </div>
-            <div className='col-6'>
+            <div className='col-12 md:col-6'>
               <h5 className='text-sm'>Type:</h5>
               <p className='text-3xl'>{data.type}</p>
             </div>{' '}
             <div className='col-12 flex justify-content-center mt-5'>
               <Button
-                className='bg-red-700 hover:bg-red-500 text-white font-bold py-2 px-4 rounded-full "'
+                className='bg-red-700 hover:bg-red-500 text-white font-bold py-2 px-4 rounded-full'
                 icon='pi pi-heart'
                 onClick={() => mutateCatchPokemon(data.id)}
               >

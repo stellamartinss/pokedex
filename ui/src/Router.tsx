@@ -8,8 +8,8 @@ import ActionBar from './components/ActionBar/ActionBar';
 
 const Router = (): JSX.Element => {
   return (
-    <div className='flex justify-center items-center h-screen"'>
-      <div className='col-span-12 bg-red-600 p-4 w-full'>
+    <div className='items-center h-screen"'>
+      <div className='bg-red-600 p-4 w-full '>
         <BrowserRouter>
           <ActionBar />
           <Routes>

@@ -1,15 +1,19 @@
 import { Dropdown } from 'primereact/dropdown';
+import './style.css';
+import { Button } from 'primereact/button';
 
 interface FiltersProps {
   selectedPokeFilters: any;
   initialFilters: any;
   prepareFilter: any;
+  initialFilterValue: any;
 }
 
 const Filters: React.FC<FiltersProps> = ({
   selectedPokeFilters,
   initialFilters,
   prepareFilter,
+  initialFilterValue,
 }): JSX.Element => {
   return (
     <div className='flex align-items-center justify-content-between'>
@@ -21,7 +25,7 @@ const Filters: React.FC<FiltersProps> = ({
           optionLabel='name'
           editable
           placeholder='Select an ability'
-          className='w-full md:w-14rem'
+          className='w-full md:w-14rem mr-2 '
         />
       </div>
       <div>

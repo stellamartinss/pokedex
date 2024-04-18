@@ -15,7 +15,7 @@ const fetchPokemons = async ({ page }: { page: number }) => {
 const caughtPokemons = async ({ page }: { page: number }) => {
   try {
     const response = await axios.get(
-      `${BASE_URL}?caught=truelimit=20&offset=${page}`
+      `${BASE_URL}/caught-pokemons?=truelimit=20&offset=${page}`
     );
     return response.data;
   } catch (error: any) {
@@ -26,7 +26,7 @@ const caughtPokemons = async ({ page }: { page: number }) => {
 
 const catchPokemon = async (id: number) => {
   try {
-    const response = await axios.post(`${BASE_URL}/${id}`);
+    const response = await axios.post(`${BASE_URL}/catch-pokemon/${id}`);
     return response.data;
   } catch (error: any) {
     console.error('Error fetching Pokemon data:', error.message);

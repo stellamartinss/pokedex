@@ -14,9 +14,24 @@ li.p-menuitem {
   font-family: 'Courier New', Courier, monospace;
   font-size: 20px;
 }
+
+@media (max-width: 960px) {
+  .p-menubar
+    .p-menuitem:not(.p-highlight):not(.p-disabled).p-focus
+    > .p-menuitem-content {
+    background-color: rgb(153 27 27);
+  }
+
+  ul.p-menubar-root-list {
+    background-color: rgb(220 38 38);
+  }
+}
+
 span.p-menuitem-text,
 span.p-menuitem-icon {
   color: white;
 }
 
-
+a.p-menubar-button {
+  color: white;
+}

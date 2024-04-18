@@ -3,12 +3,12 @@ import axios from 'axios';
 
 const BASE_API_URL = 'https://pokeapi.co/api/v2/pokemon';
 const CAUGHT_POKEMONS_DATA_BASE: {
-  name: string;
-  image: string;
-  type: string;
-  height: number;
-  weight: number;
-  abilities: string;
+  id: number,
+  name: string,
+  type: string,
+  height: string,
+  weight: string,
+  image: string,
 }[] = [];
 
 const getPokemonDitto = async (req: Request, res: Response): Promise<void> => {
@@ -56,6 +56,7 @@ const getPokemonDetails = async (
     const response = await axios.get(`${BASE_API_URL}/${id}`);
 
     const pokemonDetails = {
+      id: response.data.id,
       name: response.data.name,
       image: response.data.sprites.front_default,
       type: response.data.types.map((type: any) => type.type.name).join(', '),
@@ -128,14 +129,12 @@ const catchPokemon = async (req: Request, res: Response) => {
     const response = await axios.get(`${BASE_API_URL}/${id}`);
    
     const pokemonDetails = {
+      id: response.data.id,
       name: response.data.name,
-      image: response.data.sprites.front_default,
-      type: response.data.types.map((type: any) => type.type.name).join(', '),
+      type: response.data.types.map((type: any) => type.type.name),
       height: response.data.height,
       weight: response.data.weight,
-      abilities: response.data.abilities.map(
-        (ability: any) => ability.ability.name
-      ),
+      image: response.data.sprites.front_default,
     };
     
     CAUGHT_POKEMONS_DATA_BASE.push(pokemonDetails);

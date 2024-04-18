@@ -7,6 +7,14 @@ import { ProgressSpinner } from 'primereact/progressspinner';
 import { getAbilities } from '../../services/ability';
 import Filters from '../../components/Filters/Filters';
 import PokemonCard from '../../components/PokemonCard.tsx/PokemonCard';
+import { Panel } from 'primereact/panel';
+import { Button } from 'primereact/button';
+import PokemonNotFound from '../../components/PokemonNotFound/PokemonNotFound';
+
+const initialFilterValue = {
+  ability: '',
+  type: '',
+};
 
 const Home = () => {
   const navigate = useNavigate();
@@ -19,10 +27,8 @@ const Home = () => {
     count: 0,
     page: 0,
   });
-  const [selectedPokeFilters, setSelectedPokeFilters] = useState({
-    ability: '',
-    type: '',
-  });
+  const [selectedPokeFilters, setSelectedPokeFilters] =
+    useState(initialFilterValue);
 
   const calculateOffsetByPage = (page: number) => (page + 1) * pageData.rows;
 
@@ -53,13 +59,15 @@ const Home = () => {
     queryKey: ['fetchExperiment'],
   });
 
-  const { data: filterPokemonData, mutate: mutateFilterPokemons } = useMutation(
-    {
-      mutationFn: ({ page, filters }: { page: number; filters: string }) =>
-        getPokemonsBy({ page: page, filters: filters }),
-      mutationKey: ['filterPokemons'],
-    }
-  );
+  const {
+    data: filterPokemonData,
+    isLoading: isLoadingFilterPokemonData,
+    mutate: mutateFilterPokemons,
+  } = useMutation({
+    mutationFn: ({ page, filters }: { page: number; filters: string }) =>
+      getPokemonsBy({ page: page, filters: filters }),
+    mutationKey: ['filterPokemons'],
+  });
 
   const prepareFilter = async ({
     field,
@@ -85,12 +93,24 @@ const Home = () => {
     });
   };
 
+  const clearFilter = async () => {
+    await mutateFetchPokemons({ page: calculateOffsetByPage(pageData.first) });
+    setPokemonDataList(data.results);
+
+    setSelectedPokeFilters(initialFilterValue);
+  };
+
   const chooseSetOfContent = () => {
     if (selectedPokeFilters.ability !== '') {
-      if (filterPokemonData) {
+      if (filterPokemonData && filterPokemonData.length > 0) {
         return listTemplate(filterPokemonData);
       } else {
-        return <span>No pokemon found </span>;
+        return (
+          <PokemonNotFound
+            message={'No pokemon found'}
+            clearFilter={clearFilter}
+          />
+        );
       }
     } else {
       return listTemplate(pokemonDataList);
@@ -122,37 +142,32 @@ const Home = () => {
     navigate(`/${id}`);
   };
 
-  const itemTemplate = (pokemon: any, index: any) => {
-    return (
-      <PokemonCard
-        goToPokemonDetails={goToPokemonDetails}
-        pokemon={pokemon}
-        key={pokemon.id}
-      />
-    );
-  };
-
   const listTemplate = (items: any) => {
     if (!items || items.length === 0) return null;
 
     let list = items.map((pokemon: any, index: number) => {
-      return itemTemplate(pokemon, index);
+      return (
+        <PokemonCard
+          goToPokemonDetails={goToPokemonDetails}
+          pokemon={pokemon}
+          key={pokemon.id}
+        />
+      );
     });
 
-    return <div className='grid grid-nogutter'>{list}</div>;
+    return <div className='grid grid-nogutter '>{list}</div>;
   };
 
   return (
     <>
       {!isLoading ? (
         <div className=''>
-          <div className='flex align-items-center justify-content-between'>
-            <h1 style={{ fontSize: '40px' }}>Pokedéx</h1>
-          </div>
-          <div className='flex align-items-center justify-content-between'>
+          <div className='sm:flex align-items-center justify-content-between'>
+            <h1 className='text-3xl'>Pokedéx</h1>
             <Filters
               initialFilters={initialFilters}
               prepareFilter={prepareFilter}
+              initialFilterValue={initialFilterValue}
               selectedPokeFilters={selectedPokeFilters}
             />
           </div>
@@ -164,10 +179,13 @@ const Home = () => {
             totalRecords={pageData.count}
             rowsPerPageOptions={[20]}
             onPageChange={onPageChange}
+            className='bg-red-700 text-white box-shadow'
           />
         </div>
       ) : (
-        <ProgressSpinner />
+        <div className='flex align-items-center justify-content-center'>
+          <ProgressSpinner color='white' />
+        </div>
       )}
     </>
   );
