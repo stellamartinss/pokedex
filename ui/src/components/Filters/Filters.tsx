@@ -7,6 +7,7 @@ interface FiltersProps {
   initialFilters: any;
   prepareFilter: any;
   initialFilterValue: any;
+  clearFilter: any;
 }
 
 const Filters: React.FC<FiltersProps> = ({
@@ -14,9 +15,10 @@ const Filters: React.FC<FiltersProps> = ({
   initialFilters,
   prepareFilter,
   initialFilterValue,
+  clearFilter,
 }): JSX.Element => {
   return (
-    <div className='flex align-items-center justify-content-between'>
+    <div className='flex flex-wrap justify-between items-center'>
       <div>
         <Dropdown
           value={selectedPokeFilters.ability}
@@ -25,7 +27,7 @@ const Filters: React.FC<FiltersProps> = ({
           optionLabel='name'
           editable
           placeholder='Select an ability'
-          className='w-full md:w-14rem mr-2 '
+          className='w-full md:w-14rem mr-2 my-1 '
         />
       </div>
       <div>
@@ -36,9 +38,19 @@ const Filters: React.FC<FiltersProps> = ({
           optionLabel='name'
           editable
           placeholder='Select a type'
-          className='w-full md:w-14rem'
+          className='w-full md:w-14rem my-1'
         />
       </div>
+      {(selectedPokeFilters.ability || selectedPokeFilters.type) && (
+        <div>
+          <Button
+            className='rounded-full bg-red-700 hover:bg-red-500 text-white font-bold py-2 px-4  my-1 "'
+            onClick={() => clearFilter()}
+          >
+            Clear
+          </Button>
+        </div>
+      )}
     </div>
   );
 };

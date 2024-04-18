@@ -99,7 +99,13 @@ const getCaughtPokemonsBy = async (req: Request, res: Response) => {
 
   
     const response = CAUGHT_POKEMONS_DATA_BASE.filter(
-      (item: any) => item.abilities.includes(ability) || item.type.includes(type));
+      (item: any) => {
+        if(ability) {
+          return !!item.abilities.includes(ability) 
+        }
+
+        return !!item.type.includes(type)
+      });
 
     res.json(response);
   } catch (error) {

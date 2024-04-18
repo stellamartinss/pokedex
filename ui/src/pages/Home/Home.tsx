@@ -108,6 +108,16 @@ const Home = () => {
         return (
           <PokemonNotFound
             message={'No pokemon found'}
+            submessage={
+              <p>
+                {' '}
+                I'm currently searching within a{' '}
+                <strong>database of 100 Pokémon</strong>. Unfortunately, I
+                haven't found a method in the API to filter Pokémon by ability
+                or type without loading all of them, and searching through all
+                would be quite resource-intensive in terms of processing.
+              </p>
+            }
             clearFilter={clearFilter}
           />
         );
@@ -169,6 +179,7 @@ const Home = () => {
               prepareFilter={prepareFilter}
               initialFilterValue={initialFilterValue}
               selectedPokeFilters={selectedPokeFilters}
+              clearFilter={clearFilter}
             />
           </div>
 

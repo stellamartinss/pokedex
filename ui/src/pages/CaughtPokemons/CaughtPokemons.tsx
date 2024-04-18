@@ -112,7 +112,7 @@ const CaughtPokemons = () => {
       } else {
         return (
           <PokemonNotFound
-            message={'No pokemon found'}
+            message={'You have no pokemon with this type or ability'}
             clearFilter={clearFilter}
           />
         );
@@ -167,13 +167,14 @@ const CaughtPokemons = () => {
     <>
       {!isLoading ? (
         <div className='card'>
-          <div className='flex align-items-center justify-content-between'>
+          <div className='flex flex-wrap align-items-center justify-content-between'>
             <h1 className='text-5xl'>Caught</h1>
             <Filters
               initialFilters={initialFilters}
               prepareFilter={prepareFilter}
               selectedPokeFilters={selectedPokeFilters}
               initialFilterValue={initialFilterValue}
+              clearFilter={clearFilter}
             />
           </div>
 
