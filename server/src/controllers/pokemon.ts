@@ -1,17 +1,11 @@
 import { Request, Response } from 'express';
 import axios from 'axios';
+import { setCaughtPokemon, setPokemonDetails } from '../services/pokemon';
+import { CAUGHT_POKEMONS_DATA_BASE } from '../services/common';
 
 const BASE_API_URL = 'https://pokeapi.co/api/v2/pokemon';
-const CAUGHT_POKEMONS_DATA_BASE: {
-  id: number,
-  name: string,
-  type: string,
-  height: string,
-  weight: string,
-  image: string,
-}[] = [];
 
-const getPokemonDitto = async (req: Request, res: Response): Promise<void> => {
+const getAllPokemons = async (req: Request, res: Response): Promise<void> => {
   const { query } = req;
 
   try {
@@ -26,14 +20,7 @@ const getPokemonDitto = async (req: Request, res: Response): Promise<void> => {
     const pokemonData = await Promise.all(
       pokemonList.map(async (pokemon: any) => {
         const pokemonDetails = await axios.get(pokemon.url);
-        return {
-          id: pokemonDetails.data.id,
-          name: pokemonDetails.data.name,
-          type: pokemonDetails.data.types.map((type: any) => type.type.name),
-          height: pokemonDetails.data.height,
-          weight: pokemonDetails.data.weight,
-          image: pokemonDetails.data.sprites.front_default,
-        };
+        return setPokemonDetails(pokemonDetails);
       })
     );
 
@@ -55,17 +42,7 @@ const getPokemonDetails = async (
   try {
     const response = await axios.get(`${BASE_API_URL}/${id}`);
 
-    const pokemonDetails = {
-      id: response.data.id,
-      name: response.data.name,
-      image: response.data.sprites.front_default,
-      type: response.data.types.map((type: any) => type.type.name).join(', '),
-      height: response.data.height,
-      weight: response.data.weight,
-      abilities: response.data.abilities.map(
-        (ability: any) => ability.ability.name
-      ),
-    };
+    const pokemonDetails = setPokemonDetails(response);
     res.status(200).json(pokemonDetails);
   } catch (error) {
     res.status(500).json({ error: 'Internal Server Error' });
@@ -94,14 +71,7 @@ const getPokemonBy = async (req: Request, res: Response) => {
           (ability && abilities.includes(ability)) ||
           (type && types.includes(type))
         ) {
-          return {
-            id: pokemonDetails.data.id,
-            name: pokemonDetails.data.name,
-            type: pokemonDetails.data.types.map((type: any) => type.type.name),
-            height: pokemonDetails.data.height,
-            weight: pokemonDetails.data.weight,
-            image: pokemonDetails.data.sprites.front_default,
-          };
+          return setPokemonDetails(pokemonDetails);
         }
       })
     );
@@ -124,22 +94,15 @@ const caughtPokemons = async (req: Request, res: Response) => {
 
 const catchPokemon = async (req: Request, res: Response) => {
   const { id } = req.params;
-  
+
   try {
     const response = await axios.get(`${BASE_API_URL}/${id}`);
-   
-    const pokemonDetails = {
-      id: response.data.id,
-      name: response.data.name,
-      type: response.data.types.map((type: any) => type.type.name),
-      height: response.data.height,
-      weight: response.data.weight,
-      image: response.data.sprites.front_default,
-    };
-    
+
+    const pokemonDetails = setCaughtPokemon(response);
+
     CAUGHT_POKEMONS_DATA_BASE.push(pokemonDetails);
-    
-    res.status(201).json();
+
+    res.status(201).json(pokemonDetails);
     return;
   } catch (error) {
     console.error('Error fetching caught pokemons:', error);
@@ -148,7 +111,7 @@ const catchPokemon = async (req: Request, res: Response) => {
 };
 
 export {
-  getPokemonDitto,
+  getAllPokemons,
   getPokemonDetails,
   getPokemonBy,
   caughtPokemons,

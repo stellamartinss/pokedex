@@ -3,14 +3,14 @@ import {
   caughtPokemons,
   getPokemonBy,
   getPokemonDetails,
-  getPokemonDitto,
+  getAllPokemons,
 } from '../controllers/pokemon';
 
 const express = require('express');
 
 const router = express.Router();
 
-router.get('/', getPokemonDitto);
+router.get('/', getAllPokemons);
 router.get('/filter', getPokemonBy);
 router.get('/details/:id', getPokemonDetails);
 router.get('/caught-pokemons', caughtPokemons);

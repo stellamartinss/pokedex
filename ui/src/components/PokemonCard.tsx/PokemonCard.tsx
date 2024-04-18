@@ -1,4 +1,3 @@
-import { Button } from 'primereact/button';
 import './style.css';
 
 const PokemonCard = ({ goToPokemonDetails, pokemon }: any): JSX.Element => {
@@ -10,6 +9,11 @@ const PokemonCard = ({ goToPokemonDetails, pokemon }: any): JSX.Element => {
     >
       <div className='p-4 border-1 surface-border surface-card border-round rounded-lg	 card-shadow'>
         <div className='flex flex-wrap align-items-center justify-content-between gap-2'></div>
+        <div>
+          {pokemon.caught && (
+            <i className='pi pi-heart-fill text-red-600	' style={{ fontSize: '2rem' }}></i>
+          )}
+        </div>
         <div className='flex flex-column align-items-center gap-3 py-5'>
           <img
             className='w-9 shadow-2 border-round'
@@ -18,7 +22,7 @@ const PokemonCard = ({ goToPokemonDetails, pokemon }: any): JSX.Element => {
           />
           <div className='text-2xl font-bold'>{pokemon.name}</div>
           <div>
-            <span className='font-semibold'> {pokemon.type?.join(', ')}</span>
+            <span className='font-semibold'> {pokemon.type}</span>
           </div>
         </div>
         <div className='flex align-items-center justify-content-between'>
