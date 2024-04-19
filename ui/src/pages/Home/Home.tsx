@@ -71,10 +71,7 @@ const Home = () => {
     mutationKey: ['filterPokemons'],
   });
 
-  const prepareFilter = async ({
-    field,
-    value,
-  }: Filter) => {
+  const prepareFilter = async ({ field, value }: Filter) => {
     setSelectedPokeFilters((prev) => {
       const updatedFilters = {
         ...prev,
@@ -103,6 +100,12 @@ const Home = () => {
     if (selectedPokeFilters.ability !== '') {
       if (filterPokemonData && filterPokemonData.length > 0) {
         return listTemplate(filterPokemonData);
+      } else if (isLoadingFilterPokemonData) {
+        return (
+          <div className='flex align-items-center justify-content-center h-screen'>
+            <ProgressSpinner color='white' />
+          </div>
+        );
       } else {
         return (
           <PokemonNotFound
@@ -192,7 +195,7 @@ const Home = () => {
           />
         </div>
       ) : (
-        <div className='flex align-items-center justify-content-center'>
+        <div className='flex align-items-center justify-content-center h-screen'>
           <ProgressSpinner color='white' />
         </div>
       )}

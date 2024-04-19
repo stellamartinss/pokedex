@@ -187,7 +187,7 @@ const CaughtPokemons = () => {
           />
         </div>
       ) : (
-        <div className='flex align-items-center justify-content-center'>
+        <div className='flex align-items-center justify-content-center h-screen'>
           <ProgressSpinner color='white' />
         </div>
       )}
