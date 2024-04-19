@@ -1,9 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useMutation, useQuery } from 'react-query';
-import {
-  caughtPokemons,
-  getCaughtPokemonsBy,
-} from '../../services/pokemon';
+import { caughtPokemons, getCaughtPokemonsBy } from '../../services/pokemon';
 import { Paginator } from 'primereact/paginator';
 import { useNavigate } from 'react-router-dom';
 import { ProgressSpinner } from 'primereact/progressspinner';
@@ -11,6 +8,8 @@ import { getAbilities } from '../../services/ability';
 import Filters from '../../components/Filters/Filters';
 import PokemonCard from '../../components/PokemonCard.tsx/PokemonCard';
 import PokemonNotFound from '../../components/PokemonNotFound/PokemonNotFound';
+import { Pokemon } from '../../common/types/pokemon';
+import { Filter, PokemonFilter } from '../../common/types/filter/filter';
 
 const initialFilterValue = {
   ability: '',
@@ -28,10 +27,12 @@ const CaughtPokemons = () => {
     count: 0,
     page: 0,
   });
-  const [selectedPokeFilters, setSelectedPokeFilters] = useState({
-    ability: '',
-    type: '',
-  });
+  const [selectedPokeFilters, setSelectedPokeFilters] = useState<PokemonFilter>(
+    {
+      ability: '',
+      type: '',
+    }
+  );
 
   const calculateOffsetByPage = (page: number) => (page + 1) * pageData.rows;
 
@@ -62,22 +63,15 @@ const CaughtPokemons = () => {
     queryKey: ['fetchExperiment'],
   });
 
-  const {
-    data: filterPokemonData,
-    mutate: mutateFilterPokemons,
-  } = useMutation({
-    mutationFn: ({ page, filters }: { page: number; filters: string }) =>
-      getCaughtPokemonsBy({ page: page, filters: filters }),
-    mutationKey: ['filterCatchPokemonsBy'],
-  });
+  const { data: filterPokemonData, mutate: mutateFilterPokemons } = useMutation(
+    {
+      mutationFn: ({ page, filters }: { page: number; filters: string }) =>
+        getCaughtPokemonsBy({ page: page, filters: filters }),
+      mutationKey: ['filterCatchPokemonsBy'],
+    }
+  );
 
-  const prepareFilter = async ({
-    field,
-    value,
-  }: {
-    field: string;
-    value: string | { name: string; url: string };
-  }) => {
+  const prepareFilter = async ({ field, value }: Filter) => {
     setSelectedPokeFilters((prev) => {
       const updatedFilters = {
         ...prev,
@@ -104,7 +98,6 @@ const CaughtPokemons = () => {
     setSelectedPokeFilters(initialFilterValue);
   };
 
-
   const chooseSetOfContent = () => {
     if (selectedPokeFilters.ability !== '' || selectedPokeFilters.type !== '') {
       if (filterPokemonData && filterPokemonData.length > 0) {
@@ -117,6 +110,12 @@ const CaughtPokemons = () => {
           />
         );
       }
+    } else if (pokemonDataList.length <= 0) {
+      return (
+        <PokemonNotFound
+          message={'You haven\'t caught any Pokémon yet.'}
+        />
+      );
     } else {
       return listTemplate(pokemonDataList);
     }
@@ -147,10 +146,10 @@ const CaughtPokemons = () => {
     navigate(`/${id}`);
   };
 
-  const listTemplate = (items: any) => {
+  const listTemplate = (items: Pokemon[]) => {
     if (!items || items.length === 0) return null;
 
-    let list = items.map((pokemon: any, index: number) => {
+    let list = items.map((pokemon: Pokemon, index: number) => {
       return (
         <PokemonCard
           goToPokemonDetails={goToPokemonDetails}
@@ -173,7 +172,6 @@ const CaughtPokemons = () => {
               initialFilters={initialFilters}
               prepareFilter={prepareFilter}
               selectedPokeFilters={selectedPokeFilters}
-              initialFilterValue={initialFilterValue}
               clearFilter={clearFilter}
             />
           </div>

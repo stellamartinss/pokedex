@@ -7,7 +7,8 @@ const TEST_POKEMON_DATA = {
   types: ['electric'],
   weight: 60,
   height: 4,
-  order: 35
+  order: 35,
+  abilities: ['flying']
 }
 
 describe('Pokemon Class', () => {

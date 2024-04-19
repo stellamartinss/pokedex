@@ -118,12 +118,12 @@ const PokemonDetails = () => {
             </div>
             <div className='col-12 md:col-6'>
               <h5 className='text-sm'>Abilities</h5>
-              <p className='text-3xl'>{data?.abilities.join(', ')}</p>
+              <p className='text-3xl'>{data?.abilities}</p>
             </div>
             <div className='col-12 md:col-6'>
               <h5 className='text-sm'>Type:</h5>
               <p className='text-3xl'>{data.type}</p>
-            </div>{' '}
+            </div>
             <div className='col-12 flex justify-content-center mt-5'>
               <Button
                 className='bg-red-700 hover:bg-red-500 text-white font-bold py-2 px-4 rounded-full'

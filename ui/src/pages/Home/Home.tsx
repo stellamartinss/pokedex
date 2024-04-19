@@ -10,6 +10,8 @@ import PokemonCard from '../../components/PokemonCard.tsx/PokemonCard';
 import { Panel } from 'primereact/panel';
 import { Button } from 'primereact/button';
 import PokemonNotFound from '../../components/PokemonNotFound/PokemonNotFound';
+import { Filter, PokemonFilter } from '../../common/types/filter/filter';
+import { Pokemon } from '../../common/classes/Pokemon/Pokemon';
 
 const initialFilterValue = {
   ability: '',
@@ -28,7 +30,7 @@ const Home = () => {
     page: 0,
   });
   const [selectedPokeFilters, setSelectedPokeFilters] =
-    useState(initialFilterValue);
+    useState<PokemonFilter>(initialFilterValue);
 
   const calculateOffsetByPage = (page: number) => (page + 1) * pageData.rows;
 
@@ -72,10 +74,7 @@ const Home = () => {
   const prepareFilter = async ({
     field,
     value,
-  }: {
-    field: string;
-    value: string | { name: string; url: string };
-  }) => {
+  }: Filter) => {
     setSelectedPokeFilters((prev) => {
       const updatedFilters = {
         ...prev,
@@ -152,10 +151,10 @@ const Home = () => {
     navigate(`/${id}`);
   };
 
-  const listTemplate = (items: any) => {
+  const listTemplate = (items: Pokemon[]) => {
     if (!items || items.length === 0) return null;
 
-    let list = items.map((pokemon: any, index: number) => {
+    let list = items.map((pokemon: Pokemon, index: number) => {
       return (
         <PokemonCard
           goToPokemonDetails={goToPokemonDetails}
@@ -177,7 +176,6 @@ const Home = () => {
             <Filters
               initialFilters={initialFilters}
               prepareFilter={prepareFilter}
-              initialFilterValue={initialFilterValue}
               selectedPokeFilters={selectedPokeFilters}
               clearFilter={clearFilter}
             />

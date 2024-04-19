@@ -1,11 +1,13 @@
 import { PokemonDef } from '../../types';
 
 export abstract class AbstractPokemon {
+  id?: number
   name: string
   types: string[]
   weight: number
   height: number
   order: number
+  abilities: string[]
 
   constructor(pokemon: PokemonDef.Pokemon) {
     this.name = pokemon.name;
@@ -13,6 +15,7 @@ export abstract class AbstractPokemon {
     this.weight = pokemon.weight;
     this.height = pokemon.height;
     this.order = pokemon.order;
+    this.abilities = pokemon.abilities;
   }
 
   abstract getName(): string;

@@ -1,22 +1,16 @@
 import { Dropdown } from 'primereact/dropdown';
 import './style.css';
 import { Button } from 'primereact/button';
+import { FiltersProps } from '../../common/types/filter/filter';
 
-interface FiltersProps {
-  selectedPokeFilters: any;
-  initialFilters: any;
-  prepareFilter: any;
-  initialFilterValue: any;
-  clearFilter: any;
-}
 
-const Filters: React.FC<FiltersProps> = ({
+
+const Filters = ({
   selectedPokeFilters,
   initialFilters,
   prepareFilter,
-  initialFilterValue,
   clearFilter,
-}): JSX.Element => {
+}: FiltersProps): JSX.Element => {
   return (
     <div className='flex flex-wrap justify-between items-center'>
       <div>

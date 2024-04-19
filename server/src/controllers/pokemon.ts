@@ -3,6 +3,8 @@ import axios from 'axios';
 import { setCaughtPokemon, setPokemonDetails } from '../services/pokemon';
 import { CAUGHT_POKEMONS_DATA_BASE } from '../services/common';
 import { Pokemon } from '../models/pokemon';
+import { Abilities, Ability } from '../models/ability';
+import { Types } from '../routes/types';
 
 const BASE_API_URL = 'https://pokeapi.co/api/v2/pokemon';
 
@@ -19,9 +21,9 @@ const getAllPokemons = async (req: Request, res: Response): Promise<void> => {
 
     const pokemonList = response.data.results;
     const pokemonData = await Promise.all(
-      pokemonList.map(async (pokemon: any) => {
+      pokemonList.map(async (pokemon: Pokemon) => {
         const pokemonDetails = await axios.get(pokemon.url);
-        return setPokemonDetails(pokemonDetails);
+        return setPokemonDetails(pokemonDetails.data);
       })
     );
 
@@ -43,7 +45,7 @@ const getPokemonDetails = async (
   try {
     const response = await axios.get(`${BASE_API_URL}/${id}`);
 
-    const pokemonDetails = setPokemonDetails(response);
+    const pokemonDetails = setPokemonDetails(response.data);
     res.status(200).json(pokemonDetails);
   } catch (error) {
     res.status(500).json({ error: 'Internal Server Error' });
@@ -59,25 +61,25 @@ const getPokemonBy = async (req: Request, res: Response) => {
     const pokemonList = response.data.results;
 
     const pokemonData = await Promise.all(
-      pokemonList.map(async (pokemon: any) => {
+      pokemonList.map(async (pokemon: Pokemon) => {
         const pokemonDetails = await axios.get(pokemon.url);
         const abilities = pokemonDetails.data.abilities.map(
-          (ability: any) => ability.ability.name
+          (ability: Abilities) => ability.ability.name
         );
         const types = pokemonDetails.data.types.map(
-          (type: any) => type.type.name
+          (type: Types) => type.type.name
         );
 
         if (
           (ability && abilities.includes(ability)) ||
           (type && types.includes(type))
         ) {
-          return setPokemonDetails(pokemonDetails);
+          return setPokemonDetails(pokemonDetails.data);
         }
       })
     );
 
-    res.status(200).json(pokemonData.filter((item: any) => !!item));
+    res.status(200).json(pokemonData.filter((item: Pokemon) => !!item));
   } catch (error) {
     console.error('Error:', error);
     res.status(500).json({ error: 'Internal Server Error' });
@@ -99,12 +101,12 @@ const getCaughtPokemonsBy = async (req: Request, res: Response) => {
 
   
     const response = CAUGHT_POKEMONS_DATA_BASE.filter(
-      (item: any) => {
+      (item: Pokemon) => {
         if(ability) {
-          return !!item.abilities.includes(ability) 
+          return !!item.abilities.includes(ability as string) 
         }
 
-        return !!item.type.includes(type)
+        return !!item.type.includes(type as string)
       });
 
     res.json(response);
@@ -120,7 +122,7 @@ const catchPokemon = async (req: Request, res: Response) => {
   try {
     const response = await axios.get(`${BASE_API_URL}/${id}`);
 
-    const pokemonDetails = setCaughtPokemon(response);
+    const pokemonDetails = setCaughtPokemon(response.data);
 
     CAUGHT_POKEMONS_DATA_BASE.push(pokemonDetails);
 
